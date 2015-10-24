@@ -1,19 +1,25 @@
 {% extends "bootstrap/base.html" %}
-
-{% block title %}FlaskBlog{% endblock %}
 {% block head %}
     {{ super() }}
-    <link rel="shortcut icon" href="{{ url_for("static", filename="favicon.ico") }}" type="image/x-icon" />
-    <link rel="icon" href="{{ url_for("static", filename="favicon.ico") }}" type="image/x-icon" />
+    {% block title %}FlaskBlog{% endblock %}
+    {% block metas %}
+        <meta charset="utf-8" />
+    {% endblock %}
+    {% block styles %}
+        {{ super() }}
+        <link rel="shortcut icon" href="{{ url_for("static", filename="favicon.ico") }}" type="image/x-icon" />
+        <link rel="icon" href="{{ url_for("static", filename="favicon.ico") }}" type="image/x-icon" />
+        <style type="text/css">
+            .content {
+                padding-top: 36px;
+            }
+            .starter{
+                margin-top: -2px;
+            }
+        </style>
+    {% endblock %}
 {% endblock %}
-{% block styles %}
-    {{ super() }}
-    <style type="text/css">
-		.starter{
-			padding: 40px 0;
-		}
-	</style>
-{% endblock %}
+
 
 {% block navbar %}
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -37,11 +43,23 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container content">
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+    {% endfor %}
     <div class="page-header starter">
         {% block page_content %}
         
         {% endblock %}
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+    {{ moment.lang("zh-cn") }}
 {% endblock %}
