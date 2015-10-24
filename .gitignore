@@ -6,13 +6,13 @@
 # Packages
 *.egg
 *.egg-info
+.idea
 dist
 build
 eggs
 parts
 bin
 var
-.idea
 sdist
 develop-eggs
 .installed.cfg
@@ -36,8 +36,4 @@ nosetests.xml
 .project
 .pydevproject
 
-# SQLite databases
-*.sqlite
 
-# Virtual environment
-venv
