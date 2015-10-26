@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}确认用户-FlaskBlog{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>您好，{{ current_user.username }}!
+    </h1>
+    <h3>您还没有确认您的账户.</h3>
+    <p>
+        在您未确认账户之前，不能使用网站提供的服务，
+        请检查您的邮箱，查看确认邮件
+    </p>
+    <p>
+        重新发送确认邮件
+        <a href="{{ url_for('auth.resend_confirmation') }}">点此发送</a>
+    </p>
+</div>
+{% endblock %}
