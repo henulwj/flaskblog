@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}个人信息-FlaskBlog{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>个人信息</h1>
+    </div>
+    <div class="col-md-4">
+        <h1>{{ user.username }}</h1>
+        {% if user.name or user.location %}
+            {% if current_user == user  %}
+                <p>{% if user.name %}真实姓名：{{ user.name }}{% endif %}</p>
+            {% endif %}
+            <p>{% if user.location %}来自： <a href="http://maps.baidu.com/?q={{ user.location }}" target="_blank">{{ user.location }}</a>{% endif %}</p>
+        {% endif %}
+        {% if current_user.is_administrator() %}
+            <p>邮箱：<a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+        {% endif %}
+        {% if user.about_me %}个人简介：<p>{{ user.about_me }}</p>{% endif %}
+        {% if current_user == user  %}
+            <p>注册时间： {{ moment(user.member_since).format('L') }}</p>
+            <p>上次登录： {{ moment(user.last_seen).fromNow() }}.</p>
+        {% endif  %}
+        <p>
+            {% if user == current_user %}
+                <a class="btn btn-default" href="{{ url_for('main.edit_profile') }}">修改个人信息</a>
+            {% endif %}
+            {% if current_user.is_administrator() %}
+                <a class="btn btn-danger" href="{{ url_for('main.edit_profile_admin', id=user.id) }}">修改个人信息 [管理员]</a>
+            {% endif %}
+        </p>
+    </div>
+{% endblock %}

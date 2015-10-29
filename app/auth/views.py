@@ -12,8 +12,11 @@ from ..email import send_email
 
 @auth.before_app_request
 def before_app_request():
-    if current_user.is_authenticated and not current_user.confirmed and request.endpoint[:5] != 'auth.' and request.endpoint != 'static':
-        return redirect(url_for('auth.unconfirmed'))
+    if current_user.is_authenticated:
+            current_user.ping()
+            if not current_user.confirmed and request.endpoint[:5] != 'auth.' and request.endpoint != 'static':
+                return redirect(url_for('auth.unconfirmed'))
+
 
 @auth.route('/unconfirmed')
 def unconfirmed():
@@ -56,12 +59,6 @@ def register():
     return render_template('auth/register.html', form=form)
 
 
-@auth.route('/profile')
-@login_required
-def profile():
-    return render_template('auth/profile.html', user=current_user)
-
-
 @auth.route('/confirm/<token>')
 @login_required
 def confirm(token):
@@ -83,7 +80,7 @@ def resend_confirmation():
     return redirect(url_for('main.index'))
 
 
-@auth.route('/changepwd', methods=['GET', 'POST'])
+@auth.route('/change_pwd', methods=['GET', 'POST'])
 @login_required
 def change_password():
     form = ChangePasswordForm()
@@ -113,7 +110,7 @@ def password_reset_request():
     return render_template('auth/reset_password.html', form=form)
 
 
-@auth.route('/pwdreset/<token>', methods=['GET', 'POST'])
+@auth.route('/pwd_reset/<token>', methods=['GET', 'POST'])
 def password_reset(token):
     if not current_user.is_anonymous:
         return redirect('main.index')
@@ -131,7 +128,7 @@ def password_reset(token):
     return render_template('auth/reset_password.html', form=form)
 
 
-@auth.route('/changeemail', methods=['GET', 'POST'])
+@auth.route('/change_email', methods=['GET', 'POST'])
 @login_required
 def change_email_request():
     form = ChangeEmailForm()
@@ -147,7 +144,7 @@ def change_email_request():
     return render_template('auth/change_email.html', form=form)
 
 
-@auth.route('/changeemail/<token>')
+@auth.route('/change_email/<token>')
 @login_required
 def change_email(token):
     if current_user.email_change(token):

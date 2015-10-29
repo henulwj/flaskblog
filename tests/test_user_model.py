@@ -1,11 +1,25 @@
 # _*_ coding:utf-8 _*_
 
 import unittest
-from app.models import User
+from app.models import User, Role, Permission, AnonymousUser
+
+from app import db, create_app
 
 
 class UserModelTestCase(unittest.TestCase):
-    
+
+    def setUp(self):
+        self.app = create_app('testing')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+        Role.insert_roles()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
+
     def test_password_setter(self):
         u = User(password='hello')
         self.assertTrue(u.password_hash is not None)
@@ -24,3 +38,13 @@ class UserModelTestCase(unittest.TestCase):
         u1 = User(password='hello')
         u2 = User(password='hello')
         self.assertTrue(u1.password_hash!=u2.password_hash)
+
+    def test_roles_and_permissions(self):
+        u = User(email='henulwj@163.com', password='xxxxx')
+        self.assertTrue(u.can(Permission.WRITE_ARTICLES))
+        self.assertFalse(u.can(Permission.MODERATE_COMMENTS))
+
+    def test_anonymous_user(self):
+        u = AnonymousUser()
+        self.assertFalse(u.can(Permission.FOLLOW))
+
