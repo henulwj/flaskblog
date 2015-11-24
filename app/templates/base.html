@@ -9,6 +9,7 @@
         {{ super() }}
         <link rel="shortcut icon" href="{{ url_for("static", filename="favicon.ico") }}" type="image/x-icon" />
         <link rel="icon" href="{{ url_for("static", filename="favicon.ico") }}" type="image/x-icon" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}" />
         <style type="text/css">
             .content {
                 padding-top: 36px;
@@ -43,7 +44,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated %}
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ current_user.username }}<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ url_for('static', filename='default_avatar.png') }}" width="18px" height="18px" />{{ current_user.username }}<b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ url_for('auth.change_password') }}">修改密码</a></li>
                             <li><a href="{{ url_for('auth.change_email_request') }}">修改邮件</a></li>

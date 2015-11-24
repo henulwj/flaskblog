@@ -16,6 +16,8 @@ class Config(object):
     FLASKBLOG_MAIL_SUBJECT_PREFIX = '[FLASKBLOG]-'
     FLASKBLOG_MAIL_SENDER = 'henulwj@sina.com'
     FLASKBLOG_ADMIN = 'henulwj@qq.com'
+    FLASKBLOG_POSTS_PER_PAGE = 20
+    FLASKBLOG_FOLLOWERS_PER_PAGE = 10
 
     @staticmethod
     def init_app(app):

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
 
 {% block title %}个人信息-FlaskBlog{% endblock %}
 
@@ -7,7 +8,8 @@
     <div class="page-header">
         <h1>个人信息</h1>
     </div>
-    <div class="col-md-4">
+        <img class="img-rounded profile-thumbnail" src="{{ url_for('static', filename='default_avatar.png') }}" width="256px" height="256px" />
+    <div class="profile-header">
         <h1>{{ user.username }}</h1>
         {% if user.name or user.location %}
             {% if current_user == user  %}
@@ -23,6 +25,21 @@
             <p>注册时间： {{ moment(user.member_since).format('L') }}</p>
             <p>上次登录： {{ moment(user.last_seen).fromNow() }}.</p>
         {% endif  %}
+        <p>已发表{{ user.posts.count() }} 篇博客</p>
+        <p>
+            {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+                {% if not current_user.is_following(user) %}
+                <a href="{{ url_for('main.follow', username=user.username) }}" class="btn btn-primary">关注</a>
+                {% else %}
+                <a href="{{ url_for('main.unfollow', username=user.username) }}" class="btn btn-default">取消关注</a>
+                {% endif %}
+            {% endif %}
+            <a href="{{ url_for('main.followers', username=user.username) }}">粉丝: <span class="badge">{{ user.followers.count() - 1 }}</span></a>
+            <a href="{{ url_for('main.followed_by', username=user.username) }}">关注: <span class="badge">{{ user.followed.count() - 1 }}</span></a>
+            {% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
+            | <span class="label label-default">已关注</span>
+            {% endif %}
+        </p>
         <p>
             {% if user == current_user %}
                 <a class="btn btn-default" href="{{ url_for('main.edit_profile') }}">修改个人信息</a>
@@ -32,4 +49,11 @@
             {% endif %}
         </p>
     </div>
+    <h3>{{ user.username }}发表文章</h3>
+    {% include '_posts.html' %}
+    {% if pagination %}
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, 'main.profile', username=user.username) }}
+        </div>
+    {% endif %}
 {% endblock %}

@@ -3,6 +3,7 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField, TextAreaField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Length, Email, Regexp, ValidationError
+from flask.ext.pagedown.fields import PageDownField
 
 from ..models import Role, User
 
@@ -29,7 +30,6 @@ class EditProfileAdminForm(Form):
         self.role.choices = [(role.id, role.name) for role in Role.query.order_by(Role.name).all()]
         self.user = user
 
-
     def validate_email(self, field):
         if field.data != self.user.email and User.query.filter_by(email=field.data).first():
             raise ValidationError('邮箱已注册')
@@ -37,5 +37,11 @@ class EditProfileAdminForm(Form):
     def validate_username(self, field):
         if field.data != self.user.username and User.query.filter_by(username=field.data).first():
             raise ValidationError('用户名已注册')
+
+
+class PostForm(Form):
+    title = StringField('标题', validators=[DataRequired(), Length(1,64)])
+    body = PageDownField('总要留下点什么吧', validators=[DataRequired()])
+    submit = SubmitField('提交')
 
 
